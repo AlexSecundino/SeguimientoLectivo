@@ -68,6 +68,11 @@ public class Modulo extends Grupo {
 		contentPane.add(cbListaModulos);
 		
 		btnAdd = new JButton("A\u00F1adir");
+		btnAdd.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				añadirModulo();
+			}
+		});
 		btnAdd.setBounds(75, 80, WIDTH_BUTTON, HEIGHT_BUTTON);
 		contentPane.add(btnAdd);
 		
@@ -82,12 +87,64 @@ public class Modulo extends Grupo {
 		this.añadirListado();
 	}
 	
+	protected void añadirModulo() {
+		
+		boolean respuesta = false;
+		
+		bd = new BaseDeDatos();
+		String nombreModulo = "";
+		int codigoModulo = 0;
+		int numeroHoras = 0;
+		String horas = null;
+		String codigo = null;
+		codigo = JOptionPane.showInputDialog(contentPane, "Introduzca el codigo del modulo", "Nuevo modulo", 3);
+		
+		if(codigo != null){
+			if(codigo.matches("[0-9]+"))
+			{
+				try{
+					codigoModulo = Integer.valueOf(codigo);
+	
+					nombreModulo = JOptionPane.showInputDialog(contentPane, "Introduzca el nombre del modulo", "Nuevo modulo", 3);
+					if(!nombreModulo.isEmpty()){
+						horas = JOptionPane.showInputDialog(contentPane, "Introduzca el numero de horas anuales del modulo", "Nuevo modulo", 3);
+						if(horas != null)
+							if(horas.matches("[0-9]+"))
+							{
+								numeroHoras = Integer.valueOf(horas);
+								String SQL = "INSERT INTO modulo values('" + codigoInstitutoSeleccionado + "', '" + codigoGrupoSeleccionado + "', '" + cursoGrupoSeleccionado + "', '" + codigoModulo + "', '" + nombreModulo + "', '" + numeroHoras + "')";
+								try{
+									bd.insertar(SQL);
+									respuesta = true;
+								}
+								catch(Exception e){
+									JOptionPane.showMessageDialog(null, "No se ha podido añadir el modulo", "Error", JOptionPane.ERROR_MESSAGE);
+								}
+								finally{
+									if(respuesta){
+										cbListaModulos.removeAllItems();
+										añadirListado();
+									}
+								}
+							}
+					}
+				}
+				catch(NumberFormatException e){
+					JOptionPane.showMessageDialog(contentPane, "Error en el código del modulo. Pruebe con un número menor que " + Integer.MAX_VALUE);
+				}
+			}
+			else
+				JOptionPane.showMessageDialog(contentPane, "Codigo inválido. Debe de ser un numero mayor que 0", "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
 	private void añadirListado() {
 		
 		boolean respuesta = false;
 		
 		bd = new BaseDeDatos();
-		String SQL = "SELECT * from modulo m INNER JOIN grupo g on m.codigoInstituto = g.codigoInstituto AND g.codigoGrupo = m.codigoGrupo AND g.curso = m.curso where m.codigoGrupo ='" + codigoGrupoSeleccionado + "' AND m.curso = '" + cursoGrupoSeleccionado + "' order by m.descripcion desc";
+		
+		String SQL = "SELECT * from modulo m INNER JOIN grupo g on m.codigoInstituto = g.codigoInstituto AND g.codigoGrupo = m.codigoGrupo AND g.curso = m.curso where m.codigoInstituto ='" + codigoInstitutoSeleccionado + "' AND m.codigoGrupo ='" + codigoGrupoSeleccionado + "' AND m.curso = '" + cursoGrupoSeleccionado + "' order by m.descripcion asc";
 		resultado = bd.consultar(SQL);
 		try{
 			while(resultado.next()){

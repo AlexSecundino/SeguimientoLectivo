@@ -139,12 +139,17 @@ public class Instituto extends JFrame {
 							respuesta = true;
 						}
 						catch(Exception e){
-							JOptionPane.showMessageDialog(null, "No se ha podido añadir el instituto", "Error", JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(contentPane, "No se ha podido añadir el instituto", "Error", JOptionPane.ERROR_MESSAGE);
+						}
+						finally{
+							if(respuesta){
+								cbListaInstitutos.removeAllItems();
+								añadirListado();
+							}
 						}
 					}
-					if(respuesta){
-						cbListaInstitutos.removeAllItems();
-						añadirListado();
+					else{
+						JOptionPane.showMessageDialog(contentPane, "Introduzca un nombre", "Error", JOptionPane.ERROR_MESSAGE);
 					}
 				}
 				catch(NumberFormatException e){
@@ -202,3 +207,4 @@ public class Instituto extends JFrame {
 		return btnSeleccionar;
 	}
 }
+

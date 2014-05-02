@@ -137,10 +137,12 @@ public class Grupo extends Instituto {
 								catch(Exception e){
 									JOptionPane.showMessageDialog(contentPane, "No se ha podido añadir el grupo", "Error", JOptionPane.ERROR_MESSAGE);
 								}
-							}
-							if(respuesta){
-								cbListaGrupos.removeAllItems();
-								añadirListado();
+								finally{
+									if(respuesta){
+										cbListaGrupos.removeAllItems();
+										añadirListado();
+									}
+								}
 							}
 						}
 						catch(NumberFormatException e){
@@ -202,3 +204,4 @@ public class Grupo extends Instituto {
 		return btnAtras;
 	}
 }
+
