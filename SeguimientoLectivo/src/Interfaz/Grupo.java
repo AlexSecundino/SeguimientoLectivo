@@ -33,15 +33,9 @@ public class Grupo extends Instituto {
 	private BaseDeDatos bd = null;
 	private ResultSet resultado = null;
 	
-	
 	public static String codigoGrupoSeleccionado = null;
 	public static String cursoGrupoSeleccionado = null;
-	//private Grupo grupo = null;
-	//private String grupoSeleccionado = null;
 
-	/**
-	 * Create the frame.
-	 */
 	public Grupo() {
 		setTitle("Grupo");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -171,10 +165,10 @@ public class Grupo extends Instituto {
 			}
 		}
 		catch (SQLException e){
-			JOptionPane.showMessageDialog(null, "No se ha podido establecer la conexion", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(contentPane, "No se ha podido establecer la conexion", "Error", JOptionPane.ERROR_MESSAGE);
 		}
 		catch(Exception e){
-			JOptionPane.showMessageDialog(null, "No se ha podido establecer la conexion", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(contentPane, "No se ha podido establecer la conexion", "Error", JOptionPane.ERROR_MESSAGE);
 		}
 		finally{
 			if(!respuesta)
@@ -182,10 +176,12 @@ public class Grupo extends Instituto {
 				cbListaGrupos.addItem("No hay grupos");
 				btnSeleccionar.setEnabled(false);
 				cbListaGrupos.setEnabled(false);
+				btnEliminar.setEnabled(false);
 			}
 			else{
 				btnSeleccionar.setEnabled(true);
 				cbListaGrupos.setEnabled(true);
+				btnEliminar.setEnabled(true);
 			}	
 		}
 	}

@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.StringTokenizer;
 
 import javax.swing.JComboBox;
 
@@ -27,16 +28,16 @@ public class Modulo extends Grupo {
 	private JButton btnAtras;
 	private JButton btnExit;
 	
+	private Temario temario = null;
+	
 	private BaseDeDatos bd = null;
 	private ResultSet resultado = null;
 	
 	
 	public static String codigoModuloSeleccionado = null;
 
-	/**
-	 * Create the frame.
-	 */
 	public Modulo() {
+		setResizable(false);
 		setTitle("Modulo");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -81,6 +82,19 @@ public class Modulo extends Grupo {
 		contentPane.add(btnEliminar);
 		
 		btnSeleccionar = new JButton("Seleccionar");
+		btnSeleccionar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(cbListaModulos.getSelectedIndex() >= 0){
+					StringTokenizer st = new StringTokenizer(cbListaModulos.getSelectedItem().toString(), "-");
+					while(st.hasMoreTokens()){
+						codigoModuloSeleccionado = st.nextToken();
+						st.nextToken();
+					}
+					temario = new Temario();
+					temario.setVisible(true);
+				}
+			}
+		});
 		btnSeleccionar.setBounds(269, 31, WIDTH_BUTTON, HEIGHT_BUTTON);
 		contentPane.add(btnSeleccionar);
 		
@@ -153,7 +167,7 @@ public class Modulo extends Grupo {
 			}
 		}
 		catch (SQLException e){
-			JOptionPane.showMessageDialog(null, "No se ha podido establecer la conexion", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(contentPane, "No se ha podido establecer la conexion", "Error", JOptionPane.ERROR_MESSAGE);
 		}
 		catch(Exception e){
 			JOptionPane.showMessageDialog(null, "No se ha podido establecer la conexion", "Error", JOptionPane.ERROR_MESSAGE);
@@ -164,10 +178,12 @@ public class Modulo extends Grupo {
 				cbListaModulos.addItem("No hay grupos");
 				btnSeleccionar.setEnabled(false);
 				cbListaModulos.setEnabled(false);
+				btnEliminar.setEnabled(false);
 			}
 			else{
 				btnSeleccionar.setEnabled(true);
 				cbListaModulos.setEnabled(true);
+				btnEliminar.setEnabled(true);
 			}	
 		}
 	}

@@ -20,9 +20,6 @@ import java.awt.event.ActionEvent;
 
 public class Instituto extends JFrame {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	private JPanel contentPane;
@@ -41,9 +38,7 @@ public class Instituto extends JFrame {
 
 	public static int HEIGHT_BUTTON = 25;
 	public static int WIDTH_BUTTON = 125;
-	/**
-	 * Launch the application.
-	 */
+
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -61,6 +56,7 @@ public class Instituto extends JFrame {
 	 * Create the frame.
 	 */
 	public Instituto() {
+		setResizable(false);
 		setTitle("Instituto");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -187,10 +183,12 @@ public class Instituto extends JFrame {
 				cbListaInstitutos.addItem("No hay institutos");
 				btnSeleccionar.setEnabled(false);
 				cbListaInstitutos.setEnabled(false);
+				btnEliminar.setEnabled(false);
 			}
 			else{
 				btnSeleccionar.setEnabled(true);
 				cbListaInstitutos.setEnabled(true);
+				btnEliminar.setEnabled(true);
 			}
 				
 		}
