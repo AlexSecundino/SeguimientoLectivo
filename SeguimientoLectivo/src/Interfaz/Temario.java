@@ -39,7 +39,7 @@ public class Temario extends Modulo {
 	
 	private JTable table;
 	private JScrollPane scrollPane;
-	private JButton btnAddSesion;
+	private JButton btnVerSesion;
 	private JButton btnAddTemario;
 	private JButton btnEliminar;
 	private JButton btnAtras;
@@ -49,6 +49,8 @@ public class Temario extends Modulo {
 	private String[] nombreColumnas = {"Tema", "Evaluacion", "Horas Previstas", "Horas Reales", "Acumuladas Programa", "Acumuladas Reales", "Diferencia", "Lectivas", "Practicas", "Teoria", "Huelga", "Fiesta", "Enfermo", "Otros"};
 	private String[] datos = {};
 	private DefaultTableModel modelo = null;
+	
+	private Sesion sesion = null;
 	
 	public Temario() {
 		setResizable(true);
@@ -87,13 +89,49 @@ public class Temario extends Modulo {
 		btnAddTemario.setBounds(350, 190, WIDTH_BUTTON, HEIGHT_BUTTON);
 		contentPane.add(btnAddTemario);
 		
-		btnEliminar = new JButton("Eliminar");
+		btnEliminar = new JButton("Eliminar Tema");
 		btnEliminar.setBounds(485, 190, WIDTH_BUTTON, HEIGHT_BUTTON);
 		contentPane.add(btnEliminar);
 		
-		btnAddSesion = new JButton("A\u00F1adir Sesion");
-		btnAddSesion.setBounds(215, 190, WIDTH_BUTTON, HEIGHT_BUTTON);
-		contentPane.add(btnAddSesion);
+		btnVerSesion = new JButton("Ver Sesion");
+		btnVerSesion.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				boolean unidadCorrecta = false;
+				unidadSeleccionada = JOptionPane.showInputDialog(contentPane, "Introduzca la unidad sobre la que desea realizar la sesion", "Nueva sesion", 3);
+				if(unidadSeleccionada.matches("[0-9]+"))
+				{
+					bd = new BaseDeDatos();
+					
+					try {
+						String SQL = "SELECT unidad from temario t INNER JOIN modulo m on t.codigoModulo = m.codigoModulo AND m.codigoInstituto = t.codigoInstituto AND t.codigoGrupo = m.codigoGrupo AND t.curso = m.curso where t.codigoInstituto ='" + codigoInstitutoSeleccionado + "' AND t.codigoGrupo ='" + codigoGrupoSeleccionado + "' AND t.curso = '" + cursoGrupoSeleccionado + "' AND t.codigoModulo = '" + codigoModuloSeleccionado + "'";
+						resultado = bd.consultar(SQL);
+							while(resultado.next())
+							{
+								String tema = resultado.getString("unidad");
+								System.out.println(resultado.getString("unidad"));
+								if(tema.equals(unidadSeleccionada))
+									unidadCorrecta = true;
+							}
+					}
+					catch (SQLException e) {
+						JOptionPane.showMessageDialog(contentPane, "No se ha podido establecer la conexion", "Error", JOptionPane.ERROR_MESSAGE);
+					}
+					finally{
+						if(unidadCorrecta){
+							sesion = new Sesion();
+							sesion.setVisible(true);
+						}
+						else
+							JOptionPane.showMessageDialog(contentPane, "Unidad incorrecta", "Error", JOptionPane.ERROR_MESSAGE);
+					}
+				}
+				else
+					JOptionPane.showMessageDialog(contentPane, "Unidad incorrecta", "Error", JOptionPane.ERROR_MESSAGE);
+			}
+		});
+		btnVerSesion.setBounds(215, 190, WIDTH_BUTTON, HEIGHT_BUTTON);
+		contentPane.add(btnVerSesion);
+		
 		
 		modelo = new DefaultTableModel(matrizDatos, nombreColumnas);
 		
@@ -136,6 +174,7 @@ public class Temario extends Modulo {
 					
 				modelo.addRow(datos);
 				datos = null;
+				respuesta = true;
 			}
 		}
 		catch (SQLException e){
@@ -145,11 +184,11 @@ public class Temario extends Modulo {
 		finally{
 			if(!respuesta)
 			{
-				btnAddSesion.setEnabled(false);
+				btnVerSesion.setEnabled(false);
 				btnEliminar.setEnabled(false);
 			}
 			else{
-				btnAddSesion.setEnabled(true);
+				btnVerSesion.setEnabled(true);
 				btnEliminar.setEnabled(true);
 			}	
 		}
@@ -160,7 +199,7 @@ public class Temario extends Modulo {
 		return scrollPane;
 	}
 	public JButton getBtnAadirSesion() {
-		return btnAddSesion;
+		return btnVerSesion;
 	}
 	public JButton getBtnAdd() {
 		return btnAddTemario;
