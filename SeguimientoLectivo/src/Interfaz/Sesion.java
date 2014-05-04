@@ -34,7 +34,6 @@ public class Sesion extends Temario {
 	private JTable table;
 	private JScrollPane scrollPane;
 	private JButton btnVerActividad;
-	private JButton btnAddActividad;
 	private JButton btnAddSesion;
 	private JButton btnEliminar;
 	private JButton btnAtras;
@@ -44,6 +43,8 @@ public class Sesion extends Temario {
 	private String[] nombreColumnas = {"Fecha", "Dia", "Duracion", "Tipo", "Comentarios"};
 	private String[] datos = {};
 	private DefaultTableModel modelo = null;
+	
+	private Actividad actividad = null;
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -92,12 +93,43 @@ public class Sesion extends Temario {
 		btnEliminar.setBounds(485, 190, WIDTH_BUTTON, HEIGHT_BUTTON);
 		contentPane.add(btnEliminar);
 		
-		btnAddActividad = new JButton("A\u00F1adir Actividad");
-		btnAddActividad.setBounds(10, 190, WIDTH_BUTTON, HEIGHT_BUTTON);
-		contentPane.add(btnAddActividad);
-		
 		btnVerActividad = new JButton("Ver Actividad");
-		btnVerActividad.setBounds(145, 190, WIDTH_BUTTON, HEIGHT_BUTTON);
+		btnVerActividad.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				boolean fechaCorrecta = false;
+				sesionSeleccionada = JOptionPane.showInputDialog(contentPane, "Introduzca la fecha sobre la que desea visualizar las actividades", "Ver actividades", 3);
+				if(sesionSeleccionada.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}"))
+				{
+					bd = new BaseDeDatos();
+					
+					try {
+						String SQL = "SELECT fecha from sesion s INNER JOIN temario t on t.codigoModulo = s.codigoModulo AND s.codigoInstituto = t.codigoInstituto AND t.codigoGrupo = s.codigoGrupo AND t.curso = s.curso where s.codigoInstituto ='" + codigoInstitutoSeleccionado + "' AND s.codigoGrupo ='" + codigoGrupoSeleccionado + "' AND s.curso = '" + cursoGrupoSeleccionado + "' AND s.codigoModulo = '" + codigoModuloSeleccionado + "' AND s.unidad='" + unidadSeleccionada + "'";
+						resultado = bd.consultar(SQL);
+							while(resultado.next())
+							{
+								String fecha = resultado.getString("fecha");
+								System.out.println(resultado.getString("fecha"));
+								if(fecha.equals(sesionSeleccionada))
+									fechaCorrecta = true;
+							}
+					}
+					catch (SQLException e) {
+						JOptionPane.showMessageDialog(contentPane, "No se ha podido establecer la conexion", "Error", JOptionPane.ERROR_MESSAGE);
+					}
+					finally{
+						if(fechaCorrecta){
+							actividad = new Actividad();
+							actividad.setVisible(true);
+						}
+						else
+							JOptionPane.showMessageDialog(contentPane, "Fecha incorrecta, no hay ninguna sesion realizada ese dia", "Error", JOptionPane.ERROR_MESSAGE);
+					}
+				}
+				else
+					JOptionPane.showMessageDialog(contentPane, "Fecha incorrecta, formato [aaaa-mm-dd]", "Error", JOptionPane.ERROR_MESSAGE);
+			}
+		});
+		btnVerActividad.setBounds(215, 190, WIDTH_BUTTON, HEIGHT_BUTTON);
 		contentPane.add(btnVerActividad);
 		
 		
@@ -145,20 +177,15 @@ public class Sesion extends Temario {
 			if(!respuesta)
 			{
 				btnVerActividad.setEnabled(false);
-				btnAddActividad.setEnabled(false);
 				btnEliminar.setEnabled(false);
 			}
 			else{
 				btnVerActividad.setEnabled(true);
-				btnAddActividad.setEnabled(true);
 				btnEliminar.setEnabled(true);
 			}	
 		}
 	}
 
-	public JButton getBtnAadirActividad() {
-		return btnAddActividad;
-	}
 	public JButton getBtnVerActividad() {
 		return btnVerActividad;
 	}

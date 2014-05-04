@@ -97,7 +97,7 @@ public class Temario extends Modulo {
 		btnVerSesion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				boolean unidadCorrecta = false;
-				unidadSeleccionada = JOptionPane.showInputDialog(contentPane, "Introduzca la unidad sobre la que desea realizar la sesion", "Nueva sesion", 3);
+				unidadSeleccionada = JOptionPane.showInputDialog(contentPane, "Introduzca la unidad sobre la que desea visualizar las sesiones", "Ver Sesiones", 3);
 				if(unidadSeleccionada.matches("[0-9]+"))
 				{
 					bd = new BaseDeDatos();
@@ -108,7 +108,6 @@ public class Temario extends Modulo {
 							while(resultado.next())
 							{
 								String tema = resultado.getString("unidad");
-								System.out.println(resultado.getString("unidad"));
 								if(tema.equals(unidadSeleccionada))
 									unidadCorrecta = true;
 							}
