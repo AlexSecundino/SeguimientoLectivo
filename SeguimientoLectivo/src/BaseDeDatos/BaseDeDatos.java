@@ -87,4 +87,8 @@ public class BaseDeDatos {
 			JOptionPane.showMessageDialog(null, "No se ha podido establecer la conexion", "Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
+	
+	public void cerrarConexion{
+		connection.close();
+	}
 }
