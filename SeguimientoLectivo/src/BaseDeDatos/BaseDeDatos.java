@@ -88,7 +88,7 @@ public class BaseDeDatos {
 		}
 	}
 	
-	public void cerrarConexion{
+	public void cerrarConexion(){
 		connection.close();
 	}
 }
